@@ -1,0 +1,9 @@
+<h3>{{ feedback }}</h3>
+
+<form action="/interview" method="post">
+    <input type="hidden" name="q_index" value="{{ next_q }}">
+    <input type="hidden" name="total" value="{{ total }}">
+    <input type="hidden" name="answer" value="">
+
+    <button type="submit">Next Question</button>
+</form>

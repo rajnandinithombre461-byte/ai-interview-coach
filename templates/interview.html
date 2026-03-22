@@ -1,0 +1,10 @@
+<h2>{{ question }}</h2>
+
+<form action="/interview" method="post">
+    <textarea name="answer"></textarea><br><br>
+
+    <input type="hidden" name="q_index" value="{{ q_index }}">
+    <input type="hidden" name="total" value="{{ total }}">
+
+    <button type="submit">Submit</button>
+</form>
