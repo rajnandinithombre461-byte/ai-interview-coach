@@ -67,7 +67,6 @@ def interview():
     total = int(request.form.get("total", 0))
     answer = request.form.get("answer")
 
-    # If answer exists → evaluate
     if answer:
         feedback = generate_feedback(answer)
         score = int(feedback.split("/")[0].split(":")[1])
@@ -84,14 +83,12 @@ def interview():
             answer=answer
         )
 
-    # If NO answer → show next question
     return render_template(
         "interview.html",
         question=questions[q_index],
         q_index=q_index,
         total=total
     )
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
