@@ -16,12 +16,16 @@
 
         <br>
 
-        <a href="/interview?q={{ next_q }}&total={{ total }}">
-            <button style="padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px;">
-                Next Question
-            </button>
-        </a>
+        <form action="/interview" method="post">
 
+    <input type="hidden" name="q_index" value="{{ next_q }}">
+    <input type="hidden" name="total" value="{{ total }}">
+
+    <button type="submit" style="padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px;">
+        Next Question
+    </button>
+
+</form>
     </div>
 
 </body>
