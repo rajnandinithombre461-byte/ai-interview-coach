@@ -11,20 +11,41 @@ questions = [
 ]
 
 def generate_feedback(answer):
-    score = 5
-    feedback = "Good attempt!"
+    score = 0
+    feedback_points = []
 
     if len(answer) > 50:
         score += 2
-    if "skills" in answer.lower():
-        score += 1
+        feedback_points.append("Good detailed answer.")
+    else:
+        feedback_points.append("Answer is too short.")
+
+    if "skill" in answer.lower():
+        score += 2
+        feedback_points.append("Skills mentioned.")
+    else:
+        feedback_points.append("Add your skills.")
+
     if "project" in answer.lower():
-        score += 1
+        score += 2
+        feedback_points.append("Projects included.")
+    else:
+        feedback_points.append("Mention your projects.")
+
     if "experience" in answer.lower():
-        score += 1
+        score += 2
+        feedback_points.append("Experience mentioned.")
+    else:
+        feedback_points.append("Add your experience.")
 
-    return f"Score: {score}/10\n{feedback}"
+    if score >= 8:
+        main_feedback = "Excellent answer!"
+    elif score >= 5:
+        main_feedback = "Good answer!"
+    else:
+        main_feedback = "Needs improvement."
 
+    return f"Score: {score}/10\n{main_feedback}\n\n" + "\n".join(feedback_points)
 @app.route("/")
 def home():
     return render_template("login.html")

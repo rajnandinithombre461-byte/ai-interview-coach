@@ -1,10 +1,56 @@
-<h2>{{ question }}</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview</title>
+</head>
 
-<form action="/interview" method="post">
-    <textarea name="answer"></textarea><br><br>
+<body style="font-family: Arial; background:#f5f5f5; text-align:center;">
 
-    <input type="hidden" name="q_index" value="{{ q_index }}">
-    <input type="hidden" name="total" value="{{ total }}">
+    <div style="width:60%; margin:50px auto; background:white; padding:30px; border-radius:10px; box-shadow:0 0 10px gray;">
 
-    <button type="submit">Submit</button>
-</form>
+    <!-- Progress Bar -->
+<div style="width:100%; background:#ddd; margin-bottom:15px;">
+
+    {% if q_index == 0 %}
+        <div style="width:25%; background:#4CAF50; color:white; padding:5px;">Question 1/4</div>
+    {% elif q_index == 1 %}
+        <div style="width:50%; background:#4CAF50; color:white; padding:5px;">Question 2/4</div>
+    {% elif q_index == 2 %}
+        <div style="width:75%; background:#4CAF50; color:white; padding:5px;">Question 3/4</div>
+    {% else %}
+        <div style="width:100%; background:#4CAF50; color:white; padding:5px;">Question 4/4</div>
+    {% endif %}
+
+</div>
+
+        <!-- Timer -->
+        <p id="timer">Time: 30</p>
+
+        <!-- Question -->
+        <h2>{{ question }}</h2>
+
+        <!-- Form -->
+        <form method="post">
+            <textarea name="answer" rows="5" cols="40" placeholder="Type your answer..." required></textarea><br><br>
+            <button type="submit" style="padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px;">
+                Submit
+            </button>
+        </form>
+
+    </div>
+
+    <!-- Timer Script -->
+    <script>
+        let time = 30;
+        let timer = setInterval(function() {
+            time--;
+            document.getElementById("timer").innerText = "Time: " + time;
+            if (time <= 0) {
+                clearInterval(timer);
+                alert("Time up!");
+            }
+        }, 1000);
+    </script>
+
+</body>
+</html>

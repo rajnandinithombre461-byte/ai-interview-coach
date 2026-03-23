@@ -1,9 +1,28 @@
-<h3>{{ feedback }}</h3>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+</head>
 
-<form action="/interview" method="post">
-    <input type="hidden" name="q_index" value="{{ next_q }}">
-    <input type="hidden" name="total" value="{{ total }}">
-    <input type="hidden" name="answer" value="">
+<body style="font-family: Arial; background:#f5f5f5; text-align:center;">
 
-    <button type="submit">Next Question</button>
-</form>
+    <div style="width:60%; margin:50px auto; background:white; padding:30px; border-radius:10px; box-shadow:0 0 10px gray;">
+
+        <h2>Your Answer</h2>
+        <p>{{ answer }}</p>
+
+        <h2>Feedback</h2>
+        <pre>{{ feedback }}</pre>
+
+        <br>
+
+        <a href="/interview?q={{ next_q }}&total={{ total }}">
+            <button style="padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px;">
+                Next Question
+            </button>
+        </a>
+
+    </div>
+
+</body>
+</html>
