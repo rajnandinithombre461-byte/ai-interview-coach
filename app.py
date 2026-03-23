@@ -67,7 +67,7 @@ def interview():
     total = int(request.form.get("total", 0))
     answer = request.form.get("answer")
 
-    # ✅ If answer exists (Submit clicked)
+    # If answer exists → evaluate
     if answer:
         feedback = generate_feedback(answer)
         score = int(feedback.split("/")[0].split(":")[1])
@@ -76,18 +76,21 @@ def interview():
         if q_index + 1 >= len(questions):
             return render_template("final.html", total=total)
 
-        return render_template("result.html",
-                               feedback=feedback,
-                               next_q=q_index + 1,
-                               total=total,
-                               answer=answer)
+        return render_template(
+            "result.html",
+            feedback=feedback,
+            next_q=q_index + 1,
+            total=total,
+            answer=answer
+        )
 
-    # ✅ If Next button clicked (no answer)
-    return render_template("interview.html",
-                           question=questions[q_index],
-                           q_index=q_index,
-                           total=total)
-
+    # If NO answer → show next question
+    return render_template(
+        "interview.html",
+        question=questions[q_index],
+        q_index=q_index,
+        total=total
+    )
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
