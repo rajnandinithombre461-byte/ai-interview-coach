@@ -1,58 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Interview</title>
-</head>
+@app.route("/interview", methods=["POST"])
+def interview():
+    q_index = int(request.form.get("q_index", 0))
+    total = int(request.form.get("total", 0))
+    answer = request.form.get("answer")
 
-<body style="font-family: Arial; background:#f5f5f5; text-align:center;">
+    # 👉 If answer exists → evaluate
+    if answer:
+        feedback = generate_feedback(answer)
+        score = int(feedback.split("/")[0].split(":")[1])
+        total += score
 
-    <div style="width:60%; margin:50px auto; background:white; padding:30px; border-radius:10px; box-shadow:0 0 10px gray;">
+        if q_index + 1 >= len(questions):
+            return render_template("final.html", total=total)
 
-    <!-- Progress Bar -->
-<div style="width:100%; background:#ddd; margin-bottom:15px;">
+        return render_template("result.html",
+                               feedback=feedback,
+                               next_q=q_index + 1,
+                               total=total,
+                               answer=answer)
 
-    {% if q_index == 0 %}
-        <div style="width:25%; background:#4CAF50; color:white; padding:5px;">Question 1/4</div>
-    {% elif q_index == 1 %}
-        <div style="width:50%; background:#4CAF50; color:white; padding:5px;">Question 2/4</div>
-    {% elif q_index == 2 %}
-        <div style="width:75%; background:#4CAF50; color:white; padding:5px;">Question 3/4</div>
-    {% else %}
-        <div style="width:100%; background:#4CAF50; color:white; padding:5px;">Question 4/4</div>
-    {% endif %}
-
-</div>
-
-        <!-- Timer -->
-        <p id="timer">Time: 30</p>
-
-        <!-- Question -->
-        <h2>{{ question }}</h2>
-
-        <!-- Form -->
-        <form method="post" action="/interview">
-            <input type="hidden" name="q_index" value="{{ q_index }}">
-<input type="hidden" name="total" value="{{ total }}">
-            <textarea name="answer" rows="5" cols="40" placeholder="Type your answer..." required></textarea><br><br>
-            <button type="submit" style="padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px;">
-                Submit
-            </button>
-        </form>
-
-    </div>
-
-    <!-- Timer Script -->
-    <script>
-        let time = 30;
-        let timer = setInterval(function() {
-            time--;
-            document.getElementById("timer").innerText = "Time: " + time;
-            if (time <= 0) {
-                clearInterval(timer);
-                alert("Time up!");
-            }
-        }, 1000);
-    </script>
-
-</body>
-</html>
+    # 👉 If NO answer (Next button clicked)
+    return render_template("interview.html",
+                           question=questions[q_index],
+                           q_index=q_index,
+                           total=total)
