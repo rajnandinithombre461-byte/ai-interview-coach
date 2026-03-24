@@ -81,22 +81,6 @@
             }
         }, 1000);
     </script>
-    <script>
-function startVoice() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = "en-US";
-
-    recognition.onstart = function() {
-    alert("Listening... Speak now 🎤");
-};
-
-    recognition.onresult = function(event) {
-        document.getElementById("answerBox").value = event.results[0][0].transcript;
-    };
-
-    recognition.start();
-}
-</script>
-
+    
 </body>
 </html>
