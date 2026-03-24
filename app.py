@@ -48,7 +48,7 @@ def home():
 
 @app.route("/login", methods=["POST"])
 def login():
-    return render_template("interview.html", question=questions[0], q_index=0, total=0)
+    return render_template("interview.html", question=questions[0], q_index=0, total=0, name="Candidate")
 
 
 @app.route("/interview", methods=["POST"])
