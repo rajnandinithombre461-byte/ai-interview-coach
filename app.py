@@ -74,7 +74,7 @@ def login():
         total=0,
         name=name,
     )
-@app.route("/interview", methods=["POST"])
+@@app.route("/interview", methods=["POST"])
 def interview():
     q_index = int(request.form.get("q_index", 0))
     total = int(request.form.get("total", 0))
@@ -82,7 +82,12 @@ def interview():
 
     if answer:
         feedback = generate_feedback(answer)
-        score = int(feedback.split("/")[0].split(":")[1])
+
+        try:
+            score = int(feedback.split("/")[0].split(":")[1])
+        except:
+            score = 0
+
         total += score
 
         if q_index + 1 >= len(questions):
