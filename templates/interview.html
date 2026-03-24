@@ -44,19 +44,22 @@
         <p id="timer">Time: 30</p>
 
         <!-- Question -->
-         
-        <h3>Welcome {{ name }}</h3>
+
+        <h3>Welcome Candidate</h3>
 
         <h2>{{ question }}</h2>
 
-        <h3>DEBUG: Page Loaded</h3>
 
         <!-- Form -->
         <form method="post" action="/interview">
             <input type="hidden" name="q_index" value="{{ q_index }}">
             <input type="hidden" name="total" value="{{ total }}">
 
-            <textarea name="answer" rows="5" cols="40" placeholder="Type your answer..." required></textarea><br><br>
+            <textarea id="answerBox" name="answer" rows="5" cols="40" placeholder="Type or speak your answer..." required></textarea><br><br>
+
+<button type="button" onclick="startVoice()" style="padding:8px; background:#2196F3; color:white; border:none; border-radius:5px;">
+🎤 Speak Answer
+</button><br><br>
 
             <button type="submit" style="padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px;">
                 Submit
@@ -78,6 +81,22 @@
             }
         }, 1000);
     </script>
+    <script>
+function startVoice() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "en-US";
+
+    recognition.onstart = function() {
+    alert("Listening... Speak now 🎤");
+};
+
+    recognition.onresult = function(event) {
+        document.getElementById("answerBox").value = event.results[0][0].transcript;
+    };
+
+    recognition.start();
+}
+</script>
 
 </body>
 </html>
