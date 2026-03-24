@@ -7,19 +7,12 @@ questions = [
     "Tell me about yourself",
     "Why should we hire you?",
     "What are your strengths?",
-    "What are your weaknesses?",
-    "Where do you see yourself in 5 years?",
-    "Tell me about your project",
-    "What are your goals?"
+    "What are your weaknesses?"
 ]
 
 def generate_feedback(answer):
     score = 0
     feedback_points = []
-
-    if "i can" in answer.lower() or "i will" in answer.lower():
-       score += 1
-       feedback_points.append("Confidence shown.")
 
     if len(answer) > 50:
         score += 2
@@ -45,18 +38,8 @@ def generate_feedback(answer):
     else:
         feedback_points.append("Add your experience.")
 
-    if "team" in answer.lower():
-        score += 1
-        feedback_points.append("Teamwork mentioned.")
-
-    if score >= 8:
-        main_feedback = "Excellent answer!"
-    elif score >= 5:
-        main_feedback = "Good answer!"
-    else:
-        main_feedback = "Needs improvement."
-
     return f"Score: {score}/10\n\n" + "\n".join(feedback_points)
+
 
 @app.route("/")
 def home():
@@ -65,16 +48,10 @@ def home():
 
 @app.route("/login", methods=["POST"])
 def login():
-    name = request.form.get("name")
+    return render_template("interview.html", question=questions[0], q_index=0, total=0)
 
-    return render_template(
-        "interview.html",
-        question=questions[0],
-        q_index=0,
-        total=0,
-        name=name,
-    )
-@@app.route("/interview", methods=["POST"])
+
+@app.route("/interview", methods=["POST"])
 def interview():
     q_index = int(request.form.get("q_index", 0))
     total = int(request.form.get("total", 0))
@@ -107,6 +84,8 @@ def interview():
         q_index=q_index,
         total=total
     )
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
