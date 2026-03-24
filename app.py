@@ -7,7 +7,10 @@ questions = [
     "Tell me about yourself",
     "Why should we hire you?",
     "What are your strengths?",
-    "What are your weaknesses?"
+    "What are your weaknesses?",
+    "Where do you see yourself in 5 years?",
+    "Tell me about your project",
+    "What are your goals?"
 ]
 
 def generate_feedback(answer):
@@ -38,6 +41,10 @@ def generate_feedback(answer):
     else:
         feedback_points.append("Add your experience.")
 
+    if "team" in answer.lower():
+        score += 1
+        feedback_points.append("Teamwork mentioned.")
+
     if score >= 8:
         main_feedback = "Excellent answer!"
     elif score >= 5:
@@ -55,12 +62,15 @@ def home():
 
 @app.route("/login", methods=["POST"])
 def login():
-    return render_template("interview.html",
-                           question=questions[0],
-                           q_index=0,
-                           total=0)
+    name = request.form.get("name")
 
-
+    return render_template(
+        "interview.html",
+        question=questions[0],
+        q_index=0,
+        total=0,
+        name=name,
+    )
 @app.route("/interview", methods=["POST"])
 def interview():
     q_index = int(request.form.get("q_index", 0))
