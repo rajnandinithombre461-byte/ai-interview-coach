@@ -12,6 +12,11 @@
 
         <h1>Your Total Score: {{ total }}/40</h1>
 
+        <h2>Percentage: {{ (total/40)*100 }}%</h2>
+
+        <h3>Thank you for attending the AI Interview Practice 💼</h3>
+
+
 {% if total >= 30 %}
     <h2 style="color:green;">Excellent Performance 🎉</h2>
 {% elif total >= 20 %}
@@ -19,6 +24,8 @@
 {% else %}
     <h2 style="color:red;">Needs Improvement 💡</h2>
 {% endif %}
+
+
 
        <br><br>
 

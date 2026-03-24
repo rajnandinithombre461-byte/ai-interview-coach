@@ -17,6 +17,10 @@ def generate_feedback(answer):
     score = 0
     feedback_points = []
 
+    if "i can" in answer.lower() or "i will" in answer.lower():
+       score += 1
+       feedback_points.append("Confidence shown.")
+
     if len(answer) > 50:
         score += 2
         feedback_points.append("Good detailed answer.")
@@ -52,8 +56,19 @@ def generate_feedback(answer):
     else:
         main_feedback = "Needs improvement."
 
-    return f"Score: {score}/10\n{main_feedback}\n\n" + "\n".join(feedback_points)
+    ai_feedback = f"""
+Your answer shows {main_feedback.lower()}.
 
+Strengths:
+- {", ".join([p for p in feedback_points if "mentioned" in p])}
+
+Improvements:
+- {", ".join([p for p in feedback_points if "Add" in p or "Mention" in p or "too short" in p])}
+
+Overall, try to give structured answers including skills, projects, and experience with confidence.
+"""
+
+    return f"Score: {score}/10\n\n{ai_feedback}"
 
 @app.route("/")
 def home():
