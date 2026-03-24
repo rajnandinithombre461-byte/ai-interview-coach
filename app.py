@@ -56,19 +56,7 @@ def generate_feedback(answer):
     else:
         main_feedback = "Needs improvement."
 
-    ai_feedback = f"""
-Your answer shows {main_feedback.lower()}.
-
-Strengths:
-- {", ".join([p for p in feedback_points if "mentioned" in p])}
-
-Improvements:
-- {", ".join([p for p in feedback_points if "Add" in p or "Mention" in p or "too short" in p])}
-
-Overall, try to give structured answers including skills, projects, and experience with confidence.
-"""
-
-    return f"Score: {score}/10\n\n{ai_feedback}"
+    return f"Score: {score}/10\n\n" + "\n".join(feedback_points)
 
 @app.route("/")
 def home():
