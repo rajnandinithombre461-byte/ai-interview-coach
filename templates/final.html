@@ -12,7 +12,7 @@
 
         <h1>Your Total Score: {{ total }}/40</h1>
 
-        <h2>Percentage: {{ (total/40)*100 }}%</h2>
+        <h2>Percentage: {{ ((total/40)*100) | round(2) }}%</h2>
 
         <h3>Thank you for attending the AI Interview Practice 💼</h3>
 

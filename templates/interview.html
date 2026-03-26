@@ -52,6 +52,7 @@
 
         <!-- Form -->
         <form method="post" action="/interview">
+            <input type="hidden" name="name" value="{{ name }}">
             <input type="hidden" name="q_index" value="{{ q_index }}">
             <input type="hidden" name="total" value="{{ total }}">
 
@@ -81,6 +82,40 @@
             }
         }, 1000);
     </script>
-    
+ <script>
+function startVoice() {
+    alert("Button clicked");  // ✅ check if button works
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        alert("SpeechRecognition not supported ❌");
+        return;
+    }
+
+    if (location.protocol !== "https:") {
+        alert("Use HTTPS for mic ❌");
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+
+    recognition.onstart = function() {
+        alert("Mic started 🎤");
+    };
+
+    recognition.onresult = function(event) {
+        let text = event.results[0][0].transcript;
+        document.getElementById("answerBox").value = text;
+    };
+
+    recognition.onerror = function(event) {
+        alert("Error: " + event.error);
+    };
+
+    recognition.start();
+}
+</script>
 </body>
 </html>

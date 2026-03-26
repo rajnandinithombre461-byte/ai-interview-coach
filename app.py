@@ -1,8 +1,17 @@
+from database import init_db
+init_db()
+
 from flask import Flask, render_template, request
+from openai import OpenAI
 import os
+import sqlite3
+
+# ✅ OpenAI setup
+client = OpenAI(api_key="YOUR_API_KEY_HERE")
 
 app = Flask(__name__)
 
+# ✅ Questions
 questions = [
     "Tell me about yourself",
     "Why should we hire you?",
@@ -11,81 +20,116 @@ questions = [
 ]
 
 def generate_feedback(answer):
-    score = 0
-    feedback_points = []
-
-    if len(answer) > 50:
-        score += 2
-        feedback_points.append("Good detailed answer.")
-    else:
-        feedback_points.append("Answer is too short.")
-
-    if "skill" in answer.lower():
-        score += 2
-        feedback_points.append("Skills mentioned.")
-    else:
-        feedback_points.append("Add your skills.")
-
-    if "project" in answer.lower():
-        score += 2
-        feedback_points.append("Projects included.")
-    else:
-        feedback_points.append("Mention your projects.")
-
-    if "experience" in answer.lower():
-        score += 2
-        feedback_points.append("Experience mentioned.")
-    else:
-        feedback_points.append("Add your experience.")
-
-    return f"Score: {score}/10\n\n" + "\n".join(feedback_points)
+    return "Score: 8/10\nFeedback: Good answer\nImprovement: Improve confidence"
 
 
+# ✅ Home Page
 @app.route("/")
 def home():
     return render_template("login.html")
 
 
+# ✅ Login → Start Interview
 @app.route("/login", methods=["POST"])
 def login():
-    return render_template("interview.html", question=questions[0], q_index=0, total=0, name="Candidate")
-
-
-@app.route("/interview", methods=["POST"])
-def interview():
-    q_index = int(request.form.get("q_index", 0))
-    total = int(request.form.get("total", 0))
-    answer = request.form.get("answer")
-
-    if answer:
-        feedback = generate_feedback(answer)
-
-        try:
-            score = int(feedback.split("/")[0].split(":")[1])
-        except:
-            score = 0
-
-        total += score
-
-        if q_index + 1 >= len(questions):
-            return render_template("final.html", total=total)
-
-        return render_template(
-            "result.html",
-            feedback=feedback,
-            next_q=q_index + 1,
-            total=total,
-            answer=answer
-        )
-
+    name = request.form.get("name")  # ✅ get user name
     return render_template(
         "interview.html",
-        question=questions[q_index],
-        q_index=q_index,
-        total=total
+        question=questions[0],
+        q_index=0,
+        total=0,
+        name=name
     )
 
 
+# ✅ Interview Logic
+@app.route("/interview", methods=["GET", "POST"])
+def interview():
+
+    if request.method == "POST":
+        answer = request.form["answer"]
+        q_index = int(request.form["q_index"])
+        total = int(request.form["total"])
+        name = request.form.get("name")  # ✅ IMPORTANT
+
+        feedback = generate_feedback(answer)
+
+        # ✅ Extract score
+        score = 5
+        if "Score:" in feedback:
+            try:
+                score = int(feedback.split("/")[0].split(":")[1])
+            except:
+                score = 5
+
+        total += score
+
+        # ✅ FINAL QUESTION → SAVE TO DATABASE
+        if q_index + 1 >= len(questions):
+
+            conn = sqlite3.connect("interview.db")
+            cursor = conn.cursor()
+
+            cursor.execute(
+                "INSERT INTO results (name, score) VALUES (?, ?)",
+                (name, total)
+            )
+
+            conn.commit()
+            conn.close()
+
+            return render_template("final.html", total=total, name=name)
+
+        # ✅ NEXT QUESTION
+        else:
+            return render_template(
+                "result.html",
+                feedback=feedback,
+                next_q=q_index + 1,
+                total=total,
+                answer=answer,
+                name=name
+            )
+
+    # ✅ FIRST LOAD (GET)
+    name = request.args.get("name", "Candidate")
+
+    return render_template(
+        "interview.html",
+        question=questions[0],
+        q_index=0,
+        total=0,
+        name=name
+    )
+
+@app.route("/data")
+def show_data():
+    import sqlite3
+    conn = sqlite3.connect("interview.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM results")
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    return str(rows)
+
+@app.route("/admin")
+def admin():
+    import sqlite3
+    conn = sqlite3.connect("interview.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM results")
+    data = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("admin.html", data=data)
+
+
+# ✅ RUN SERVER
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
