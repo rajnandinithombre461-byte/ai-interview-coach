@@ -51,7 +51,8 @@
 
 
         <!-- Form -->
-        <form method="post" action="/interview">
+        <form method="post" action="/interview" onsubmit="return validateForm()">
+
             <input type="hidden" name="name" value="{{ name }}">
             <input type="hidden" name="q_index" value="{{ q_index }}">
             <input type="hidden" name="total" value="{{ total }}">
@@ -70,24 +71,44 @@
     </div>
 
     <!-- Timer Script -->
-    <script>
-        let time = 30;
-        let timer = setInterval(function() {
-            time--;
-            document.getElementById("timer").innerText = "Time: " + time;
-
-            if (time <= 0) {
-                clearInterval(timer);
-                alert("Time up!");
-            }
-        }, 1000);
-    </script>
- <script>
+   <script>
 function startVoice() {
-    alert("Button clicked");  // ✅ check if button works
+
+    alert("Button clicked");  // check button
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+    if (!SpeechRecognition) {
+        alert("SpeechRecognition not supported ❌");
+        return;
+    }
+
+    if (location.protocol !== "https:") {
+        alert("Use HTTPS for mic ❌");
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+
+    recognition.onstart = function() {
+        alert("Mic started 🎤");
+    };
+
+    recognition.onresult = function(event) {
+        let text = event.results[0][0].transcript;
+        document.getElementById("answerBox").value = text;
+    };
+
+    recognition.onerror = function(event) {
+        alert("Error: " + event.error);
+    };
+
+    recognition.start();
+}
+</script>
+
+   
     if (!SpeechRecognition) {
         alert("SpeechRecognition not supported ❌");
         return;
